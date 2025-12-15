@@ -1,0 +1,231 @@
+openapi: 3.0.0
+info:
+  title: Multimodal Parliament Explorer API
+  description: REST API for Exploring Parliamentary Speeches, Speakers, NLP Statistics.
+  version: 1.2.0
+  contact:
+    name: Muthu Mathanagopal
+    email: s9767188@stud.uni-frankfurt.de
+  x-author: Muthu Mathanagopal
+  
+servers:
+  - url: http://localhost:7000
+    description: Local development server
+paths:
+  /:
+    get:
+      summary: Redirect to the overview page
+      description: Redirects the root path to the `/overview` endpoint.
+      responses:
+        '302':
+          description: Redirect to `/overview`
+  /overview:
+    get:
+      summary: Get a list of speakers
+      description: Fetches all speakers and filters them based on a search query.
+      parameters:
+        - name: search
+          in: query
+          description: Search query to filter speakers by ID, party, or name.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of filtered speakers
+          content:
+            text/html:
+              schema:
+                type: string
+  /overview/{speakerId}:
+    get:
+      summary: Get details of a specific speaker
+      description: Fetches details of a specific speaker along with their speeches.
+      parameters:
+        - name: speakerId
+          in: path
+          description: The ID of the speaker.
+          required: true
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Search query to filter speeches by agenda title or text content.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Details of the speaker and their speeches
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Speaker not found
+  /stats:
+    get:
+      summary: Get statistics for speeches
+      description: Fetches statistics for topics, POS, sentiments, and named entities across all speeches.
+      parameters:
+        - name: speechIds
+          in: query
+          description: Comma-separated list of speech IDs to filter statistics.
+          required: false
+          schema:
+            type: string
+        - name: speechId
+          in: query
+          description: A single speech ID to filter statistics.
+          required: false
+          schema:
+            type: string
+        - name: party
+          in: query
+          description: Filter statistics by party.
+          required: false
+          schema:
+            type: string
+        - name: speakerId
+          in: query
+          description: Filter statistics by speaker ID.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Statistics for the specified filters
+          content:
+            text/html:
+              schema:
+                type: string
+  /stats/topic/{topicLabel}:
+    get:
+      summary: Get statistics for speeches filtered by topic
+      description: Fetches statistics for speeches with the highest score for a specific topic.
+      parameters:
+        - name: topicLabel
+          in: path
+          description: The label of the topic to filter speeches.
+          required: true
+          schema:
+            type: string
+        - name: party
+          in: query
+          description: Filter statistics by party.
+          required: false
+          schema:
+            type: string
+        - name: speakerId
+          in: query
+          description: Filter statistics by speaker ID.
+          required: false
+          schema:
+            type: string
+        - name: speechIds
+          in: query
+          description: Comma-separated list of speech IDs to filter statistics.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Statistics for speeches filtered by topic
+          content:
+            text/html:
+              schema:
+                type: string
+  /search:
+    get:
+      summary: Perform a generic search
+      description: Searches for speeches and speakers based on a query.
+      parameters:
+        - name: q
+          in: query
+          description: The search query.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results for speeches and speakers
+          content:
+            text/html:
+              schema:
+                type: string
+  /protocol:
+    get:
+      summary: Get a list of protocols (sessions)
+      description: Fetches a list of protocols (sessions) with optional search and sorting.
+      parameters:
+        - name: search
+          in: query
+          description: Search query to filter protocols by index or title.
+          required: false
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort order for protocols (asc or desc).
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: A list of protocols
+          content:
+            text/html:
+              schema:
+                type: string
+  /protocol/{protocolIndex}:
+    get:
+      summary: Get speeches for a specific protocol
+      description: Fetches speeches for a specific protocol (session) with optional search.
+      parameters:
+        - name: protocolIndex
+          in: path
+          description: The index of the protocol.
+          required: true
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Search query to filter speeches by agenda title or text content.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Speeches for the specified protocol
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: No speeches found for the specified protocol
+  /export-pdf/{speakerId}:
+    get:
+      summary: Export speaker details and speeches as a PDF
+      description: Fetches details of a specific speaker, their speeches, and generates a PDF document.
+      parameters:
+        - name: speakerId
+          in: path
+          description: The ID of the speaker to export.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A PDF document containing the speaker's details and speeches.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Speaker not found
+          content:
+            text/html:
+              schema:
+                type: string

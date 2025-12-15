@@ -1,0 +1,68 @@
+@startuml
+left to right direction
+skinparam actor {
+    BackgroundColor White
+    BorderColor Black
+    FontColor Black
+}
+
+skinparam usecase {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+    FontColor Black
+    FontStyle Bold
+}
+
+skinparam package {
+    BackgroundColor LightGray
+    BorderColor Black
+    FontColor Black
+}
+actor Admin
+actor User
+actor System
+
+rectangle "Multimodal Parliament Explorer" {
+  Admin -- (Import Plenary Protocols)
+  Admin -- (Import into Database)
+  Admin -- (Manage Database)
+
+  User -- (Explore Parliamentary Data)
+  User -- (Export Data)
+
+  System -- (Process NLP)
+  System -- (List Speaker)
+  System -- (List Parties)
+  System -- (List Fractions)
+  System -- (List Speeches)
+  System -- (List Sentiment)
+  System -- (List Named Entities)
+  System -- (Complex NLP Visualizations)
+
+  (Import Plenary Protocols) --> (Process NLP)
+  (Import Plenary Protocols) --> (List Speaker)
+  (Import Plenary Protocols) --> (List Parties)
+  (Import Plenary Protocols) --> (List Fractions)
+  (Import Plenary Protocols) --> (List Speeches)
+  (Import Plenary Protocols) --> (List Sentiment)
+  (Import Plenary Protocols) --> (List Named Entities)
+  (Import Plenary Protocols) --> (Complex NLP Visualizations)
+
+  (Import into Database) --> (Update / Modify / Delete CRUD operations)
+  (Import into Database) --> (Filter)
+  (Import into Database) --> (Using HTML Visualize the speech emotions)
+
+  (Explore Parliamentary Data) --> (Search Speeches)
+  (Explore Parliamentary Data) --> (View Speaker Details)
+  (Explore Parliamentary Data) --> (View Sentiment Analysis)
+  (Explore Parliamentary Data) --> (View Named Entities)
+  (Explore Parliamentary Data) --> (View Complex Visualizations)
+
+  (Export Data) --> (Export to PDF)
+  (Export Data) --> (Export to XML)
+
+  (Manage Database) --> (Backup Database)
+  (Manage Database) --> (Restore Database)
+}
+
+@enduml

@@ -1,0 +1,742 @@
+@startuml
+
+top to bottom direction
+skinparam linetype ortho
+
+
+
+package "org.parliament" {
+interface Agenda << interface >> {
+  + toString(): String
+   id: String
+   index: String
+   title: String
+}
+interface Comment << interface >> {
+  + toString(): String
+   text: String
+   speakerId: String
+   speechId: String
+   id: String
+}
+interface NLP << interface >> {
+   sentiments: Map<String, Sentiment>
+   _id: String
+   topics: Map<String, Topic>
+   tokens: Map<String, Token>
+   sentences: Map<String, Sentence>
+   namedEntities: Map<String, NamedEntity>
+   dependencies: Map<String, Dependency>
+   lemma: Map<String, Lemma>
+   pos: Map<String, POS>
+}
+interface Picture << interface >> {
+  + toString(): String
+   name: String
+   description: String
+   hqPicture: String
+   author: String
+   pictureID: String
+   date: String
+   id: String
+   hpPicture: String
+}
+
+
+interface Factory << interface >> {
+  + getFilteredSpeechIds(String, String): List<String>
+  + getNamedEntityStatsForSpeech(String): List<Map<String, Object>>
+  + getPOSStatsForSpeech(String): List<Map<String, Object>>
+  + getSpeechesBySpeaker(String): Set<Speech>
+  + getPOSStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + getFilteredSpeechesForSpeaker(String, String): List<Document>
+  + getSpeechIdsWithHighestTopicScore(String): List<String>
+  + searchspeakers(String): Set<Speaker>
+  + getDocumentsFromCollection(String, List<Bson>): List<Document>
+  + getSpeechById(String): Speech_MongoDB_Impl
+  + searchSpeakersByName(String): List<Document>
+  + searchSpeechesByQuery(String): List<Document>
+  + fetchSpeakerImageUrl(String): String
+  + insertSpeakerImage(String, String, String, Map<String, String>): void
+  + getSpeechesByProtocolIndex(String): List<Speech>
+  + getSentimentStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + getTopicStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + insertOrUpdateSpeakers(String, List<Map<String, Object>>): void
+  + getNamedEntityStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + insertComments(String, List<Map<String, Object>>): void
+  + getSentimentStatsForSpeech(String): List<Map<String, Object>>
+  + insertSpeeches(String, List<Map<String, Object>>): void
+  + getTopicStatsForSpeech(String): List<Map<String, Object>>
+  + getspeakers(): Set<Speaker>
+   POSStatisticsForAllSpeeches: List<Map<String, Object>>
+   sentimentStatisticsForAllSpeeches: List<Map<String, Object>>
+   pictures: Set<Picture>
+   commentsFromSpeeches: Set<String>
+   topicStatisticsForAllSpeeches: List<Map<String, Object>>
+   speeches: Set<Speech>
+   comments: Set<Comment>
+   namedEntityStatisticsForAllSpeeches: List<Map<String, Object>>
+}
+
+
+
+interface Protocol << interface >> {
+  + toString(): String
+   date: String
+   place: String
+   index: String
+   title: String
+   wp: String
+}
+interface Speaker << interface >> {
+  + toString(): String
+   sterbedatum: String
+   geburtsdatum: String
+   beruf: String
+   fraktion: String
+   id: String
+   geschlecht: String
+   party: String
+   lastName: String
+   geburtsort: String
+   familienstand: String
+   religion: String
+   akademischerTitel: String
+   firstName: String
+   vita: String
+   memberships: List<Map<String, String>>
+   rednerId: String
+}
+interface TextContent << interface >> {
+  + toString(): String
+   text: String
+   speakerId: String
+   type: String
+   id: String
+}
+interface Speech << interface >> {
+  + toString(): String
+   name: String
+   agenda: Agenda_File_Impl
+   protocol: Protocol_File_Impl
+   textContent: List<TextContent_File_Impl>
+   sitzungsdatum: String
+   redeId: String
+   fraktion: String
+   speechText: String
+   id: String
+   rednerId: String
+}
+package "org.parliament.fileImplement" {
+class Agenda_File_Impl {
+  + Agenda_File_Impl(String, String, String):
+  - id: String
+  - index: String
+  - title: String
+  + toString(): String
+  + toTex(): String
+   id: String
+   index: String
+   title: String
+}
+class Comment_File_Impl {
+  + Comment_File_Impl(String, String, String, String):
+  - id: String
+  - speechId: String
+  - text: String
+  - speakerId: String
+  + toTex(): String
+  + toString(): String
+   text: String
+   speakerId: String
+   speechId: String
+   id: String
+}
+class Picture_File_Impl {
+  + Picture_File_Impl(String, String, String, String, String, String, String, String):
+  - description: String
+  - id: String
+  - author: String
+  - pictureID: String
+  - name: String
+  - date: String
+  + toTex(): String
+  + toString(): String
+   name: String
+   description: String
+   hqPicture: String
+   author: String
+   pictureID: String
+   date: String
+   id: String
+   hpPicture: String
+}
+class Protocol_File_Impl {
+  + Protocol_File_Impl(String, String, String, String, String):
+  - index: String
+  - wp: String
+  - place: String
+  - date: String
+  - title: String
+  + toString(): String
+  + toTex(): String
+   date: String
+   place: String
+   index: String
+   title: String
+   wp: String
+}
+class Speaker_File_Impl {
+  + Speaker_File_Impl(String, String, String, String, String, String, String, String, String, String, List<Map<String, String>>, String, String, String, String, String):
+  - sterbedatum: String
+  - familienstand: String
+  - firstName: String
+  - lastName: String
+  - fraktion: String
+  - memberships: List<Map<String, String>>
+  - akademischerTitel: String
+  - beruf: String
+  - vita: String
+  - id: String
+  - geburtsdatum: String
+  - geburtsort: String
+  - geschlecht: String
+  - rednerId: String
+  - religion: String
+  - party: String
+  + toTex(): String
+  + toString(): String
+   sterbedatum: String
+   geburtsdatum: String
+   beruf: String
+   fraktion: String
+   id: String
+   geschlecht: String
+   party: String
+   lastName: String
+   geburtsort: String
+   familienstand: String
+   religion: String
+   akademischerTitel: String
+   firstName: String
+   vita: String
+   memberships: List<Map<String, String>>
+   rednerId: String
+}
+class TextContent_File_Impl {
+  + TextContent_File_Impl(String, String, String, String):
+  - text: String
+  - speakerId: String
+  - id: String
+  - type: String
+  + toString(): String
+  + toTex(): String
+   text: String
+   speakerId: String
+   type: String
+   id: String
+}
+class Speech_File_Impl {
+  + Speech_File_Impl(String, String, String, String, String, String, String, Agenda_File_Impl, Protocol_File_Impl, List<TextContent_File_Impl>):
+  - name: String
+  - protocol: Protocol_File_Impl
+  - id: String
+  - rednerId: String
+  - sitzungsdatum: String
+  - fraktion: String
+  - speechText: String
+  - agenda: Agenda_File_Impl
+  - redeId: String
+  - textContent: List<TextContent_File_Impl>
+  + toTex(): String
+  + toString(): String
+   name: String
+   agenda: Agenda_File_Impl
+   protocol: Protocol_File_Impl
+   textContent: List<TextContent_File_Impl>
+   sitzungsdatum: String
+   redeId: String
+   fraktion: String
+   speechText: String
+   id: String
+   rednerId: String
+}
+package "org.parliament.mongoDBImplement" {
+class Agenda_MongoDB_Impl {
+  + Agenda_MongoDB_Impl(Document):
+}
+class Comment_MongoDB_Impl {
+  + Comment_MongoDB_Impl(Document):
+}
+class Factory_MongoDB_Impl {
+  + Factory_MongoDB_Impl(MongoDatabaseHandler):
+  + getspeakers(): Set<Speaker>
+  + getFilteredSpeechesForSpeaker(String, String): List<Document>
+  + getDocumentsFromCollection(String, List<Bson>): List<Document>
+  + insertSpeakerImage(String, String, String, Map<String, String>): void
+  + getPOSStatsForSpeech(String): List<Map<String, Object>>
+  + getAllSpeeches(String): List<Speech_File_Impl>
+  + getSentimentStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + getSpeechById(String): Speech_MongoDB_Impl
+  + fetchSpeakerImageUrl(String): String
+  + getAllSpeakers(String): List<Speaker_File_Impl>
+  + getNamedEntityStatsForSpeech(String): List<Map<String, Object>>
+  + getSpeechIdsWithHighestTopicScore(String): List<String>
+  + getTopicStatsForSpeech(String): List<Map<String, Object>>
+  + getAllComments(String): List<Comment_File_Impl>
+  + getAllPictures(String): List<Picture_File_Impl>
+  + getTopicStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + getSpeechesBySpeaker(String): Set<Speech>
+  + getFilteredSpeechIds(String, String): List<String>
+  + getPOSStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + searchSpeakersByName(String): List<Document>
+  + insertComments(String, List<Map<String, Object>>): void
+  + getSpeechesByProtocolIndex(String): List<Speech>
+  - getPartyRegex(String): Pattern
+  + searchSpeechesByQuery(String): List<Document>
+  + getNamedEntityStatsForSpeeches(List<String>): List<Map<String, Object>>
+  + getSentimentStatsForSpeech(String): List<Map<String, Object>>
+  + searchspeakers(String): Set<Speaker>
+  + insertOrUpdateSpeakers(String, List<Map<String, Object>>): void
+  + insertSpeeches(String, List<Map<String, Object>>): void
+   POSStatisticsForAllSpeeches: List<Map<String, Object>>
+   sentimentStatisticsForAllSpeeches: List<Map<String, Object>>
+   pictures: Set<Picture>
+   commentsFromSpeeches: Set<String>
+   topicStatisticsForAllSpeeches: List<Map<String, Object>>
+   speeches: Set<Speech>
+   comments: Set<Comment>
+   namedEntityStatisticsForAllSpeeches: List<Map<String, Object>>
+}
+
+class NLP_MongoDB_Impl {
+  + NLP_MongoDB_Impl(Document):
+  - lemma: Map<String, Lemma>
+  - namedEntities: Map<String, NamedEntity>
+  - dependencies: Map<String, Dependency>
+  - tokens: Map<String, Token>
+  - sentiments: Map<String, Sentiment>
+  - _id: String
+  - pos: Map<String, POS>
+  - sentences: Map<String, Sentence>
+  - topics: Map<String, Topic>
+   sentiments: Map<String, Sentiment>
+   _id: String
+   topics: Map<String, Topic>
+   tokens: Map<String, Token>
+   sentences: Map<String, Sentence>
+   namedEntities: Map<String, NamedEntity>
+   dependencies: Map<String, Dependency>
+   lemma: Map<String, Lemma>
+   pos: Map<String, POS>
+}
+class Picture_MongoDB_Impl {
+  + Picture_MongoDB_Impl(Document):
+}
+
+
+class Protocol_MongoDB_Impl {
+  + Protocol_MongoDB_Impl(Document):
+}
+class Speaker_MongoDB_Impl {
+  + Speaker_MongoDB_Impl(Document):
+  - mapMemberships(List<Document>): List<Map<String, String>>
+}
+
+
+class Speech_MongoDB_Impl {
+  + Speech_MongoDB_Impl(Document):
+  - mapTextContent(List<Document>): List<TextContent_File_Impl>
+}
+class TextContent_MongoDB_Impl {
+  + TextContent_MongoDB_Impl(Document):
+}
+package "org.parliament.mongoDBImplement.nlpImplement" {
+class NamedEntity {
+  + NamedEntity(String, String, String, String, String):
+  - neValue: String
+  - begin: String
+  - end: String
+  - id: String
+  - text: String
+   text: String
+   neValue: String
+   begin: String
+   id: String
+   end: String
+}
+
+class Dependency {
+  + Dependency(String, String, String, String, String, String, String, String):
+  - governor: String
+  - begin: String
+  - flavor: String
+  - dependencyType: String
+  - dependent: String
+  - text: String
+  - id: String
+  - end: String
+   governor: String
+   dependencyType: String
+   text: String
+   dependent: String
+   flavor: String
+   begin: String
+   id: String
+   end: String
+}
+
+
+
+class Lemma {
+  + Lemma(String, String, String, String, String):
+  - id: String
+  - text: String
+  - value: String
+  - begin: String
+  - end: String
+   text: String
+   begin: String
+   id: String
+   end: String
+   value: String
+}
+class POS {
+  + POS(String, String, String, String, String, String):
+  - text: String
+  - posValue: String
+  - end: String
+  - begin: String
+  - coarseValue: String
+  - id: String
+   posValue: String
+   text: String
+   begin: String
+   coarseValue: String
+   id: String
+   end: String
+}
+class Sentence {
+  + Sentence(String, String, String, String):
+  - text: String
+  - id: String
+  - begin: String
+  - end: String
+   text: String
+   begin: String
+   id: String
+   end: String
+}
+class Sentiment {
+  + Sentiment(String, String, String, String, String):
+  - sentiment: String
+  - subjectivity: String
+  - end: String
+  - id: String
+  - begin: String
+   sentiment: String
+   subjectivity: String
+   begin: String
+   id: String
+   end: String
+}
+
+class Token {
+  + Token(String, String, String, String):
+  - begin: String
+  - id: String
+  - end: String
+  - text: String
+   text: String
+   begin: String
+   id: String
+   end: String
+}
+class Topic {
+  + Topic(String, String, String, String, String):
+  - end: String
+  - id: String
+  - value: String
+  - begin: String
+  - score: String
+   score: String
+   begin: String
+   id: String
+   end: String
+   value: String
+}
+}
+}
+}
+}
+package "org.database" {
+class MongoDatabaseHandler {
+  + MongoDatabaseHandler(String):
+  - database: MongoDatabase
+  + aggregate(String, List<Bson>): List<Document>
+  + count(String, Bson): long
+  + closeConnection(): void
+  + create(String, Document): void
+  + read(String, Bson): List<Document>
+  + deleteDocument(String, String, Object): void
+  + insertDocument(String, Document): void
+  + getDocuments(String): MongoCollection<Document>
+  + update(String, Bson, Bson): void
+  + updateDocument(String, String, Object, Document): void
+  + delete(String, Bson): void
+   database: MongoDatabase
+}
+class MongoClientFactory {
+  + MongoClientFactory():
+  + getMongoClient(String): MongoClient
+  + closeMongoClient(): void
+}
+interface MongoClientIntf << interface >> {
+  + closeMongoClient(): void
+  + getMongoClient(String): MongoClient
+}
+}
+package "org.utils" {
+class AppConfig {
+  + AppConfig(String):
+   host: String
+   staticFilesDirectory: String
+   port: int
+   staticFilesHostedPath: String
+}
+
+
+class ImageScraper {
+  + ImageScraper():
+  - extractMetadataValue(String, String): String
+  + scrapeImageData(String, String): Map<String, String>
+  - extractDescription(String): String
+}
+
+
+class FileDownloader {
+  + FileDownloader():
+  + downloadFiles(): boolean
+  - downloadSpeeches(Document): boolean
+  - downloadFile(String, String, String): boolean
+  - unzipFile(String, String): void
+  - searchForFile(Document, String): String?
+}
+class ImageDownloader {
+  + ImageDownloader():
+  + downloadAllSpeakerImages(List<Picture>, String): void
+}
+class PdfGenerator {
+  + PdfGenerator():
+  + generatePdf(String, String): File
+}
+class TexExporter {
+  + TexExporter():
+  + exportToTex(Speaker, List<Speech>, Picture): String
+  + escapeLatex(String): String
+}
+
+class XMIExporter {
+  + XMIExporter():
+  + exportToXMI(CAS, String): void
+}
+
+
+class VideoDownloader {
+  + VideoDownloader(MongoDatabaseHandler, Factory_MongoDB_Impl):
+  - extractSitzungNumber(String): int
+  + extractFirstAndLastNames(String): String[]
+  - matchVideoTitleWithSpeech(String, Map<String, String>): String?
+  + downloadVideosForProtocol(String): void
+  - extractUniqueVideoInfo(): Set<VideoInfo>
+  + fetchSpeechesByProtocolIndex(String): Map<String, String>
+  - downloadVideo(String, String): void
+  - extractVideoId(String): String
+}
+class VideoInfo {
+  + VideoInfo(String, String, String):
+}
+
+
+}
+package "org.driver" {
+
+class Driver {
+  + Driver():
+  + main(String[]): void
+}
+
+}
+package "org.scheduler" {
+
+class BundestagScheduler {
+  + BundestagScheduler():
+  + main(String[]): void
+  - runBatchJob(): void
+}
+}
+package "org.nlp" {
+class NlpProcessing {
+  + NlpProcessing():
+  + setRemoteContext(): void
+  + runRemoteDriver(JCas): JCas
+  + checkIfInDB(String, Boolean): boolean
+  + init(MongoDatabase): void
+  + createJCas(Speech): JCas
+  + parseSpeech(Speech): void
+  + serializeCas(JCas): void
+  + setRemoteNLPDrivers(): void
+  + parseVideo(): void
+  + parseProcessedSpeeches(): void
+  + convertVideoToSpeech(String): Map<String, String>
+  + saveCasInDB(JCas, Boolean): void
+}
+interface NlpProcessingInterface << interface >> {
+  + convertVideoToSpeech(): JCas?
+  + serializeCas(): void
+  + createJCas(): JCas?
+  + parseProcessedSpeeches(): void
+  + parseVideo(): void
+  + parseSpeech(): void
+  + saveCasInDB(): void
+  + init(): void
+  + checkIfInDB(): Object?
+  + runRemoteDriver(): JCas?
+  + setRemoteNLPDrivers(): void
+  + setRemoteContext(): void
+}
+
+}
+
+package "org.rest" {
+class RESTHandler {
+  + RESTHandler(Factory, TemplateHandler, AppConfig):
+  - app: Javalin
+  + stop(): void
+  - initializeRoutes(): void
+  + start(): void
+   app: Javalin
+}
+
+}
+package "org.template" {
+class TemplateHandler {
+  + TemplateHandler(String):
+  - freemarkerConfig: Configuration
+  + render(String, Map<String, Object>): String
+   freemarkerConfig: Configuration
+}
+}
+package "org.parser" {
+class XMLParser {
+  + XMLParser():
+  - removeunwanteddetailsFromSpeechtext(String): String
+  - hasChildElement(Element): boolean
+  - parseSpeakerMetadata(String): List<Map<String, Object>>
+  - extractMemberships(Element, String): List<Map<String, String>>
+  - extractComments(Element, String, String): List<Map<String, Object>>
+  + parseXML(String): Map<String, Object>
+  - extractAgendaDetails(Element): Map<String, Object>
+  - extractAllSpeechAgendas(Node): Map<String, Map<String, Object>>
+  - traverseNodes(Node, Map<String, Map<String, Object>>, Element): void
+  - extractSpeakerData(NodeList, Map<String, Object>): String
+  - getTextContent(Element, String): String
+  - extractProtocolDetails(Document): Map<String, Object>
+  - extractTextContent(Element, String): String
+  - findAncestorMDB(Node): Element
+  - extractName(Element): String
+  - extractTextContentWithComments(Element, String, String): List<Map<String, String>>
+  + parsespeaker(String): Map<String, Object>
+}
+}
+Agenda_File_Impl          -[#008200,dashed]-^  Agenda
+Agenda_MongoDB_Impl       -[#000082,plain]-^  Agenda_File_Impl
+Comment_File_Impl         -[#008200,dashed]-^  Comment
+Comment_MongoDB_Impl      -[#000082,plain]-^  Comment_File_Impl
+Driver                    -[#595959,dashed]->  AppConfig                : "«create»"
+Driver                    -[#595959,dashed]->  Factory_MongoDB_Impl     : "«create»"
+Driver                    -[#595959,dashed]->  MongoDatabaseHandler     : "«create»"
+Driver                    -[#595959,dashed]->  RESTHandler              : "«create»"
+Driver                    -[#595959,dashed]->  TemplateHandler          : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Agenda_File_Impl         : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Comment_File_Impl        : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Comment_MongoDB_Impl     : "«create»"
+Factory_MongoDB_Impl      -[#008200,dashed]-^  Factory
+Factory_MongoDB_Impl     "1" *-[#595959,plain]-> "dbHandler\n1" MongoDatabaseHandler
+Factory_MongoDB_Impl      -[#595959,dashed]->  Picture_File_Impl        : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Picture_MongoDB_Impl     : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Protocol_File_Impl       : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Speaker_File_Impl        : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Speaker_MongoDB_Impl     : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Speech_File_Impl         : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  Speech_MongoDB_Impl      : "«create»"
+Factory_MongoDB_Impl      -[#595959,dashed]->  TextContent_File_Impl    : "«create»"
+MongoClientFactory        -[#008200,dashed]-^  MongoClientIntf
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "dependencies\n" Dependency
+NLP_MongoDB_Impl          -[#595959,dashed]->  Dependency               : "«create»"
+NLP_MongoDB_Impl          -[#595959,dashed]->  Lemma                    : "«create»"
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "lemma\n" Lemma
+NLP_MongoDB_Impl          -[#008200,dashed]-^  NLP
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "namedEntities\n" NamedEntity
+NLP_MongoDB_Impl          -[#595959,dashed]->  NamedEntity              : "«create»"
+NLP_MongoDB_Impl          -[#595959,dashed]->  POS                      : "«create»"
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "pos\n" POS
+NLP_MongoDB_Impl          -[#595959,dashed]->  Sentence                 : "«create»"
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "sentences\n" Sentence
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "sentiments\n" Sentiment
+NLP_MongoDB_Impl          -[#595959,dashed]->  Sentiment                : "«create»"
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "tokens\n" Token
+NLP_MongoDB_Impl          -[#595959,dashed]->  Token                    : "«create»"
+NLP_MongoDB_Impl          -[#595959,dashed]->  Topic                    : "«create»"
+NLP_MongoDB_Impl         "1" -[#595959,plain]-> "topics\n" Topic
+NlpProcessing             -[#008200,dashed]-^  NlpProcessingInterface
+Picture_File_Impl         -[#008200,dashed]-^  Picture
+Picture_MongoDB_Impl      -[#000082,plain]-^  Picture_File_Impl
+Protocol_File_Impl        -[#008200,dashed]-^  Protocol
+Protocol_MongoDB_Impl     -[#000082,plain]-^  Protocol_File_Impl
+RESTHandler              "1" *-[#595959,plain]-> "config\n1" AppConfig
+RESTHandler              "1" *-[#595959,plain]-> "factory\n1" Factory
+RESTHandler              "1" *-[#595959,plain]-> "templateHandler\n1" TemplateHandler
+Speaker_File_Impl         -[#008200,dashed]-^  Speaker
+Speaker_MongoDB_Impl      -[#000082,plain]-^  Speaker_File_Impl
+Speech_File_Impl         "1" *-[#595959,plain]-> "agenda\n1" Agenda_File_Impl
+Speech_File_Impl         "1" *-[#595959,plain]-> "protocol\n1" Protocol_File_Impl
+Speech_File_Impl          -[#008200,dashed]-^  Speech
+Speech_File_Impl         "1" -[#595959,plain]-> "textContent\n" TextContent_File_Impl
+Speech_MongoDB_Impl       -[#595959,dashed]->  Agenda_MongoDB_Impl      : "«create»"
+Speech_MongoDB_Impl       -[#595959,dashed]->  Protocol_MongoDB_Impl    : "«create»"
+Speech_MongoDB_Impl       -[#000082,plain]-^  Speech_File_Impl
+TextContent_File_Impl     -[#008200,dashed]-^  TextContent
+TextContent_MongoDB_Impl  -[#000082,plain]-^  TextContent_File_Impl
+VideoDownloader           -[#595959,dashed]->  Factory_MongoDB_Impl     : "«create»"
+VideoDownloader           -[#595959,dashed]->  MongoDatabaseHandler     : "«create»"
+VideoDownloader          "1" *-[#595959,plain]-> "dbHandler\n1" MongoDatabaseHandler
+VideoDownloader           -[#595959,dashed]->  VideoInfo                : "«create»"
+VideoInfo                 +-[#820000,plain]-  VideoDownloader
+Speech_MongoDB_Impl o--> "textContent\n*" TextContent_MongoDB_Impl : «maps»
+Speech_MongoDB_Impl o--> "comments\n*" Comment_MongoDB_Impl : «uses»
+Speech_MongoDB_Impl o--> Agenda_MongoDB_Impl : «uses»
+Speech_MongoDB_Impl o--> Protocol_MongoDB_Impl : «uses»
+
+Factory_MongoDB_Impl o--> NLP_MongoDB_Impl : «reads NLP»
+
+RESTHandler o--> NlpProcessing : «calls»
+NlpProcessing o--> NLP_MongoDB_Impl : «stores»
+
+XMLParser o--> Speech_File_Impl : «creates»
+XMLParser o--> Speaker_File_Impl : «creates»
+XMLParser o--> Protocol_File_Impl : «creates»
+XMLParser o--> Agenda_File_Impl : «creates»
+
+XMIExporter o--> NlpProcessing : «exports CAS»
+BundestagScheduler o--> FileDownloader : «schedules»
+FileDownloader o--> Factory_MongoDB_Impl : «inserts speeches»
+ImageDownloader o--> ImageScraper : «scrapes before download»
+ImageDownloader o-- "pictures\n*" Picture_File_Impl : «downloads»
+
+PdfGenerator o--> TexExporter : «uses TeX»
+TexExporter o-- Speaker : «formats»
+TexExporter o-- Speech : «formats»
+TexExporter o-- Picture : «formats»
+
+@enduml

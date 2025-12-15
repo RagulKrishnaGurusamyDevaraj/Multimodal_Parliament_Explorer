@@ -1,0 +1,66 @@
+\documentclass[border=3cm]{standalone}
+\usepackage{pgfgantt}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+
+% Dezente Farbtöne
+\definecolor{myblue}{HTML}{4F81BD}
+\definecolor{mygreen}{HTML}{9BBB59}
+\definecolor{myred}{HTML}{C0504D}
+\definecolor{mymagenta}{HTML}{9F4C7C}
+\definecolor{mygray}{HTML}{D9D9D9}
+
+\begin{document}
+
+\begin{ganttchart}[
+    vgrid={*{5}{draw=black!20}},
+    hgrid={*{5}{draw=black!20}},
+    x unit=5cm, % Breite pro Woche
+    y unit chart=2cm,
+    title height=1.2,
+    title label font=\Large\bfseries,
+    bar height=0.6,
+    bar top shift=0.2,
+    group height=0.8,
+    group top shift=0.3
+]{1}{5}
+    % Titelzeilen
+    \gantttitle{Februar--März 2025}{5} \\
+    \gantttitle{Woche 1}{1}
+    \gantttitle{Woche 2}{1}
+    \gantttitle{Woche 3}{1}
+    \gantttitle{Woche 4}{1}
+    \gantttitle{Woche 5}{1} \\
+    \gantttitle{17.02 - 23.02.2025}{1}
+    \gantttitle{24.02 - 02.03.2025}{1}
+    \gantttitle{03.03 - 09.03.2025}{1}
+    \gantttitle{10.03 - 16.03.2025}{1}
+    \gantttitle{17.03 - 23.03.2025}{1} \\
+
+    % Aufgaben und Gruppen
+    \ganttbar[name=T1, bar/.append style={fill=myblue!70}]{Aufgabe 1: Ragul}{1}{1} \\
+    
+    \ganttgroup[group/.append style={fill=mygray}]{Backend \& NLP}{2}{3} \\
+    \ganttbar[name=T2, bar/.append style={fill=myred!70}]{Aufgabe 2: Bharani}{2}{3} \\
+    \ganttbar[name=T21, bar/.append style={fill=mygreen!70}]{Aufgabe 2.1: Simon}{2}{3} \\
+    
+    \ganttmilestone[name=M1]{\textbf{Backend \& NLP fertig}}{4} \\
+
+    \ganttgroup[group/.append style={fill=mygray}]{Visualisierung \& Export}{4}{5} \\
+    \ganttbar[name=T31, bar/.append style={fill=mymagenta!70}]{Aufgabe 3.1: Muthu}{4}{5} \\
+    \ganttbar[name=T32, bar/.append style={fill=myblue!70}]{Aufgabe 3.2: Ragul}{4}{5} \\
+    \ganttbar[name=T4, bar/.append style={fill=mygreen!70}]{Aufgabe 4: Simon}{4}{5} \\
+    
+    \ganttmilestone{\textbf{Projektende (23.03.2025)}}{5} \\
+
+    % Abhängigkeiten
+    \ganttlink{T1}{T2}
+    \ganttlink{T1}{T21}
+    \ganttlink{T2}{M1}
+    \ganttlink{T21}{M1}
+    \ganttlink{M1}{T31}
+    \ganttlink{M1}{T32}
+    \ganttlink{M1}{T4}
+\end{ganttchart}
+
+\end{document}
